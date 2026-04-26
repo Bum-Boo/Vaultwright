@@ -1,0 +1,25 @@
+{
+  "name": "@vaultwright/mcp-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic local MCP tool layer for Obsidian vault maintenance.",
+  "type": "module",
+  "bin": {
+    "vaultwright-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "tsx": "^4.7.2"
+  }
+}

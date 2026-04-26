@@ -1,0 +1,19 @@
+{
+  "name": "vaultwright",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first maintenance layer for Obsidian vaults through a deterministic MCP server.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev": "pnpm --filter @vaultwright/mcp-server dev",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

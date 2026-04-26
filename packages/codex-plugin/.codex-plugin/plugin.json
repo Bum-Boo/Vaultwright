@@ -1,0 +1,18 @@
+{
+  "name": "vaultwright",
+  "version": "0.1.0",
+  "description": "Local-first Codex workflow support for maintaining Obsidian vaults through the Vaultwright MCP server.",
+  "author": "Vaultwright contributors",
+  "skills": [
+    {
+      "name": "vaultwright",
+      "path": "skills/vaultwright/SKILL.md",
+      "description": "Use Vaultwright MCP tools safely for Obsidian vault review, cleanup proposals, task harvesting, link opportunities, MOCs, study plans, and project status drafts."
+    }
+  ],
+  "mcpServers": {
+    "vaultwright": {
+      "config": "mcp/vaultwright.mcp.json"
+    }
+  }
+}
