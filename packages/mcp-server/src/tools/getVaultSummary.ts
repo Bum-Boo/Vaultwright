@@ -24,7 +24,9 @@ export async function getVaultSummary(input: z.infer<typeof getVaultSummaryInput
       .map((entry) => entry.name)
       .sort(),
     excludedFolders,
-    vaultwrightOutputFolders: VAULTWRIGHT_OUTPUT_FOLDERS.map((folder) => folder.split(path.sep).join("/")),
+    vaultwrightOutputFolders: VAULTWRIGHT_OUTPUT_FOLDERS.map((folder) =>
+      folder.split(path.sep).join("/")
+    ),
     lastScannedAt: new Date().toISOString()
   };
 }

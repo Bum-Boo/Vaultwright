@@ -1,6 +1,7 @@
 ---
 tags: [project, writing]
 ---
+
 # Portfolio Site
 
 The portfolio should explain projects clearly and show practical outcomes.

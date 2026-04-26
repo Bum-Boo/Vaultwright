@@ -3,6 +3,7 @@ title: MCP
 aliases: [Model Context Protocol]
 tags: [tools, protocol]
 ---
+
 # MCP
 
 Model Context Protocol lets local tools expose structured capabilities to clients.

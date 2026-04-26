@@ -2,6 +2,7 @@
 tags: [pkm, obsidian]
 aliases: [PKM]
 ---
+
 # Personal Knowledge Management
 
 Good PKM workflows keep capture, review, and synthesis separate.

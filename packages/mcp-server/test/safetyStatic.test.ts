@@ -4,10 +4,12 @@ import { describe, expect, it } from "vitest";
 
 async function sourceFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
-  const files = await Promise.all(entries.map(async (entry) => {
-    const fullPath = path.join(directory, entry.name);
-    return entry.isDirectory() ? sourceFiles(fullPath) : [fullPath];
-  }));
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const fullPath = path.join(directory, entry.name);
+      return entry.isDirectory() ? sourceFiles(fullPath) : [fullPath];
+    })
+  );
   return files.flat().filter((file) => file.endsWith(".ts"));
 }
 
@@ -18,7 +20,11 @@ describe("static safety guards", () => {
     for (const file of files) {
       const content = await readFile(file, "utf8");
       if (/console\.log|process\.stdout/.test(content)) violations.push(`${file}: stdout logging`);
-      if (/\bfetch\s*\(|\bWebSocket\b|from\s+["']node:https?["']|require\(["']https?["']\)/.test(content)) {
+      if (
+        /\bfetch\s*\(|\bWebSocket\b|from\s+["']node:https?["']|require\(["']https?["']\)/.test(
+          content
+        )
+      ) {
         violations.push(`${file}: network API`);
       }
     }
@@ -31,7 +37,10 @@ describe("static safety guards", () => {
     for (const file of files) {
       const normalized = file.replace(/\\/g, "/");
       const content = await readFile(file, "utf8");
-      const mutates = /\b(?:writeFile|appendFile|rename|unlink|rm|rmdir|copyFile|createWriteStream)\b/.test(content);
+      const mutates =
+        /\b(?:writeFile|appendFile|rename|unlink|rm|rmdir|copyFile|createWriteStream)\b/.test(
+          content
+        );
       if (mutates && !normalized.endsWith("/src/output/writeSafeNote.ts")) {
         violations.push(file);
       }

@@ -1,6 +1,7 @@
 ---
 tags: [inbox, ai]
 ---
+
 # Untitled AI Idea
 
 Maybe Codex could review an Obsidian vault through MCP and create cleanup plans.

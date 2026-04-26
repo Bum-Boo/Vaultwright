@@ -1,5 +1,5 @@
 {
   "command": "node",
-  "args": ["packages/mcp-server/dist/index.js"],
+  "args": ["../mcp-server/dist/index.js"],
   "env": {}
 }

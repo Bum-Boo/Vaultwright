@@ -4,7 +4,14 @@ import { writeSafeNote } from "../output/writeSafeNote.js";
 
 export const createProposalNoteInput = z.object({
   vaultPath: z.string(),
-  proposalType: z.enum(["inbox-cleanup", "task-harvest", "link-opportunities", "moc", "dashboard", "other"]),
+  proposalType: z.enum([
+    "inbox-cleanup",
+    "task-harvest",
+    "link-opportunities",
+    "moc",
+    "dashboard",
+    "other"
+  ]),
   title: z.string().min(1),
   content: z.string().min(1)
 });

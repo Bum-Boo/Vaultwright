@@ -50,9 +50,7 @@ Add an MCP server entry like this, replacing the path with your real checkout pa
   "mcpServers": {
     "vaultwright": {
       "command": "node",
-      "args": [
-        "C:/absolute/path/to/Vaultwright/packages/mcp-server/dist/index.js"
-      ]
+      "args": ["C:/absolute/path/to/Vaultwright/packages/mcp-server/dist/index.js"]
     }
   }
 }
@@ -65,9 +63,7 @@ On macOS or Linux the path will look more like:
   "mcpServers": {
     "vaultwright": {
       "command": "node",
-      "args": [
-        "/absolute/path/to/Vaultwright/packages/mcp-server/dist/index.js"
-      ]
+      "args": ["/absolute/path/to/Vaultwright/packages/mcp-server/dist/index.js"]
     }
   }
 }

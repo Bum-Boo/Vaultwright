@@ -2,6 +2,7 @@
 tags: [resource, local-first]
 aliases: [Local-first]
 ---
+
 # Local-first Software
 
 Local-first software keeps useful data and workflows on the user's machine first. Cloud services can be optional, but the local copy remains valuable on its own.

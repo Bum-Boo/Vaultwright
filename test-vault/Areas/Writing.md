@@ -1,6 +1,7 @@
 ---
 tags: [area, writing]
 ---
+
 # Writing
 
 Writing work includes project case studies, study summaries, and clear setup documentation.

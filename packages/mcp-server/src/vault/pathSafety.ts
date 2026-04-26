@@ -25,7 +25,11 @@ export function rejectTraversal(relativePath: string): void {
     throw new PathSafetyError("Path traversal is not allowed.");
   }
   const normalized = path.normalize(relativePath);
-  if (normalized === ".." || normalized.startsWith(`..${path.sep}`) || normalized.includes(`${path.sep}..${path.sep}`)) {
+  if (
+    normalized === ".." ||
+    normalized.startsWith(`..${path.sep}`) ||
+    normalized.includes(`${path.sep}..${path.sep}`)
+  ) {
     throw new PathSafetyError("Path traversal is not allowed.");
   }
 }
@@ -66,14 +70,18 @@ export async function resolveSafeNotePath(
   const vaultRoot = await resolveVaultPath(vaultPath);
   const absolutePath = path.resolve(vaultRoot, notePath);
   const relativePath = path.relative(vaultRoot, absolutePath);
-  if (!isInside(vaultRoot, absolutePath)) throw new PathSafetyError("Resolved file is outside vaultPath.");
-  if (isExcluded(relativePath, excludedFolders)) throw new PathSafetyError(`Path is inside an excluded folder: ${relativePath}`);
+  if (!isInside(vaultRoot, absolutePath))
+    throw new PathSafetyError("Resolved file is outside vaultPath.");
+  if (isExcluded(relativePath, excludedFolders))
+    throw new PathSafetyError(`Path is inside an excluded folder: ${relativePath}`);
 
   // Check the final real path, not just the lexical path, to block symlink escapes.
   const realPath = await fs.realpath(absolutePath).catch(() => null);
   if (!realPath) throw new PathSafetyError(`Markdown file does not exist: ${notePath}`);
-  if (!isInside(vaultRoot, realPath)) throw new PathSafetyError("Symlink escapes outside vaultPath are not allowed.");
-  if (!isMarkdownPath(realPath)) throw new PathSafetyError("Resolved file must be a Markdown .md file.");
+  if (!isInside(vaultRoot, realPath))
+    throw new PathSafetyError("Symlink escapes outside vaultPath are not allowed.");
+  if (!isMarkdownPath(realPath))
+    throw new PathSafetyError("Resolved file must be a Markdown .md file.");
 
   const stat = await fs.stat(realPath);
   if (!stat.isFile()) throw new PathSafetyError("Resolved note path is not a file.");
@@ -83,14 +91,22 @@ export async function resolveSafeNotePath(
     throw new PathSafetyError(`Resolved file is inside an excluded folder: ${realRelativePath}`);
   }
 
-  return { vaultRoot, absolutePath: realPath, relativePath: realRelativePath.split(path.sep).join("/") };
+  return {
+    vaultRoot,
+    absolutePath: realPath,
+    relativePath: realRelativePath.split(path.sep).join("/")
+  };
 }
 
-export async function ensureSafeVaultChild(vaultPath: string, relativePath: string): Promise<string> {
+export async function ensureSafeVaultChild(
+  vaultPath: string,
+  relativePath: string
+): Promise<string> {
   rejectAbsoluteNotePath(relativePath);
   rejectTraversal(relativePath);
   const vaultRoot = await resolveVaultPath(vaultPath);
   const absolutePath = path.resolve(vaultRoot, relativePath);
-  if (!isInside(vaultRoot, absolutePath)) throw new PathSafetyError("Resolved path is outside vaultPath.");
+  if (!isInside(vaultRoot, absolutePath))
+    throw new PathSafetyError("Resolved path is outside vaultPath.");
   return absolutePath;
 }

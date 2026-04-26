@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { safeOutputFilename } from "../src/output/filenames.js";
+import { patchProposalMarkdown } from "../src/output/markdown.js";
 import { parseMarkdown } from "../src/vault/parseMarkdown.js";
 import { extractMarkdownTasks } from "../src/vault/tasks.js";
 
@@ -27,8 +28,57 @@ Body with #inline and [[Codex]].
     expect(tasks[1].done).toBe(true);
   });
 
+  it("does not infer recurrence or priority from ordinary task text", () => {
+    const tasks = extractMarkdownTasks(
+      "- [ ] Read every chapter eventually\n- [ ] Pick a high level design"
+    );
+    expect(tasks[0].recurrenceCandidate).toBeUndefined();
+    expect(tasks[0].priorityCandidate).toBeUndefined();
+    expect(tasks[1].recurrenceCandidate).toBeUndefined();
+    expect(tasks[1].priorityCandidate).toBeUndefined();
+  });
+
+  it("detects explicit task markers only", () => {
+    const tasks = extractMarkdownTasks(
+      "- [ ] Ship it 📅 2026-05-01 priority high 🔁 every week\n- [ ] Escalate ⏫"
+    );
+    expect(tasks[0]).toMatchObject({
+      dueDateCandidate: "2026-05-01",
+      priorityCandidate: "high",
+      recurrenceCandidate: "🔁 every week"
+    });
+    expect(tasks[1].priorityCandidate).toBe("⏫");
+  });
+
   it("generates safe output filenames", () => {
     const name = safeOutputFilename("Inbox Cleanup: A/B?", new Date("2026-04-25T00:00:00.000Z"));
     expect(name).toBe("2026-04-25T00-00-00-000Z-inbox-cleanup-ab.md");
+  });
+
+  it("formats patch proposals as unapplied warning notes", () => {
+    const markdown = patchProposalMarkdown({
+      title: "Patch",
+      targetNotePath: "Notes/A.md",
+      rationale: "Clarify wording.",
+      patchContent: "- old\n+ new"
+    });
+    expect(markdown).toBe(`# Patch
+
+> [!warning]
+> This is a Vaultwright patch proposal. It has not been applied.
+
+Target note: \`Notes/A.md\`
+
+## Rationale
+
+Clarify wording.
+
+## Proposed Patch
+
+\`\`\`diff
+- old
++ new
+\`\`\`
+`);
   });
 });

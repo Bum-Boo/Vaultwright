@@ -22,15 +22,24 @@ function aliases(frontmatter: Record<string, unknown>): string[] {
 
 export async function findLinkOpportunities(input: z.infer<typeof findLinkOpportunitiesInput>) {
   const parsed = findLinkOpportunitiesInput.parse(input);
-  const note = parsed.notePath ? await resolveSafeNotePath(parsed.vaultPath, parsed.notePath, parsed.excludedFolders) : null;
+  const note = parsed.notePath
+    ? await resolveSafeNotePath(parsed.vaultPath, parsed.notePath, parsed.excludedFolders)
+    : null;
   const vaultRoot = await resolveVaultPath(parsed.vaultPath);
-  const files = await scanMarkdownFiles(parsed.vaultPath, { excludedFolders: parsed.excludedFolders });
-  const targets = files.map((file) => ({
+  const files = await scanMarkdownFiles(parsed.vaultPath, {
+    excludedFolders: parsed.excludedFolders
+  });
+  const readableFiles = files.filter((file) => !file.skipped);
+  const targets = readableFiles.map((file) => ({
     path: file.path,
     title: file.title,
-    names: [file.title, file.basename, ...aliases(file.frontmatter)].filter((name) => name.length >= 4)
+    names: [file.title, file.basename, ...aliases(file.frontmatter)].filter(
+      (name) => name.length >= 4
+    )
   }));
-  const sources = note ? files.filter((file) => file.path === note.relativePath) : files;
+  const sources = note
+    ? readableFiles.filter((file) => file.path === note.relativePath)
+    : readableFiles;
   const opportunities = [];
   const seen = new Set<string>();
 
@@ -43,7 +52,11 @@ export async function findLinkOpportunities(input: z.infer<typeof findLinkOpport
       for (const name of target.names) {
         const pattern = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
         if (!pattern.test(content)) continue;
-        if (existingLinks.has(target.title.toLowerCase()) || existingLinks.has(target.path.replace(/\.md$/i, "").toLowerCase())) continue;
+        if (
+          existingLinks.has(target.title.toLowerCase()) ||
+          existingLinks.has(target.path.replace(/\.md$/i, "").toLowerCase())
+        )
+          continue;
         const key = `${source.path}->${target.path}:${name.toLowerCase()}`;
         if (seen.has(key)) continue;
         seen.add(key);
@@ -55,7 +68,8 @@ export async function findLinkOpportunities(input: z.infer<typeof findLinkOpport
           reason: "Existing note title or alias is mentioned without an existing wiki link.",
           confidence: name === target.title ? 0.72 : 0.62
         });
-        if (opportunities.length >= (parsed.limit ?? LIMITS.maxLinkOpportunities)) return opportunities;
+        if (opportunities.length >= (parsed.limit ?? LIMITS.maxLinkOpportunities))
+          return opportunities;
       }
     }
   }

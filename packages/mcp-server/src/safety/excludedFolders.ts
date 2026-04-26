@@ -15,5 +15,7 @@ export const VAULTWRIGHT_OUTPUT_FOLDERS = [
 ];
 
 export function mergeExcludedFolders(excludedFolders?: string[]): string[] {
-  return Array.from(new Set([...DEFAULT_EXCLUDED_FOLDERS, ...(excludedFolders ?? [])].filter(Boolean)));
+  return Array.from(
+    new Set([...DEFAULT_EXCLUDED_FOLDERS, ...(excludedFolders ?? [])].filter(Boolean))
+  );
 }

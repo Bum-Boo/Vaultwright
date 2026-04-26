@@ -1,6 +1,7 @@
 ---
 tags: [meeting, vaultwright]
 ---
+
 # 2026-04-24 Vaultwright Planning
 
 ## Attendees

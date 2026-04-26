@@ -2,6 +2,7 @@
 tags: [project, vaultwright, local-first]
 aliases: [Local Vault Review]
 ---
+
 # Vaultwright
 
 Vaultwright is a local-first maintenance layer for Obsidian vaults. It should help Codex inspect the vault while keeping actual changes under user control.

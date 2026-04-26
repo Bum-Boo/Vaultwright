@@ -5,7 +5,10 @@ import { createPatchProposal, createPatchProposalInput } from "./tools/createPat
 import { createProposalNote, createProposalNoteInput } from "./tools/createProposalNote.js";
 import { createReviewNote, createReviewNoteInput } from "./tools/createReviewNote.js";
 import { extractTasks, extractTasksInput } from "./tools/extractTasks.js";
-import { findLinkOpportunities, findLinkOpportunitiesInput } from "./tools/findLinkOpportunities.js";
+import {
+  findLinkOpportunities,
+  findLinkOpportunitiesInput
+} from "./tools/findLinkOpportunities.js";
 import { getVaultSummary, getVaultSummaryInput } from "./tools/getVaultSummary.js";
 import { readNote, readNoteInput } from "./tools/readNote.js";
 import { readNotesBatch, readNotesBatchInput } from "./tools/readNotesBatch.js";
@@ -35,7 +38,12 @@ const tools: Record<string, ToolDefinition> = {
     description: "Read-only scan of Markdown metadata across the vault.",
     inputSchema: {
       type: "object",
-      properties: { vaultPath: stringSchema, excludedFolders: stringArraySchema, maxFiles: { type: "number" } },
+      properties: {
+        vaultPath: stringSchema,
+        excludedFolders: stringArraySchema,
+        maxFiles: { type: "number" },
+        maxFileBytesForScan: { type: "number" }
+      },
       required: ["vaultPath"]
     },
     handler: (input) => scanVault(scanVaultInput.parse(input))
@@ -68,7 +76,13 @@ const tools: Record<string, ToolDefinition> = {
     description: "Read-only lexical search over note titles, tags, headings, links, and body text.",
     inputSchema: {
       type: "object",
-      properties: { vaultPath: stringSchema, query: stringSchema, excludedFolders: stringArraySchema, limit: { type: "number" } },
+      properties: {
+        vaultPath: stringSchema,
+        query: stringSchema,
+        excludedFolders: stringArraySchema,
+        maxFileBytesForScan: { type: "number" },
+        limit: { type: "number" }
+      },
       required: ["vaultPath", "query"]
     },
     handler: (input) => searchNotes(searchNotesInput.parse(input))
@@ -77,7 +91,12 @@ const tools: Record<string, ToolDefinition> = {
     description: "Read-only extraction of Markdown checkbox tasks.",
     inputSchema: {
       type: "object",
-      properties: { vaultPath: stringSchema, excludedFolders: stringArraySchema, includeDone: { type: "boolean" }, limit: { type: "number" } },
+      properties: {
+        vaultPath: stringSchema,
+        excludedFolders: stringArraySchema,
+        includeDone: { type: "boolean" },
+        limit: { type: "number" }
+      },
       required: ["vaultPath"]
     },
     handler: (input) => extractTasks(extractTasksInput.parse(input))
@@ -86,7 +105,12 @@ const tools: Record<string, ToolDefinition> = {
     description: "Read-only conservative suggestions for unlinked mentions of existing notes.",
     inputSchema: {
       type: "object",
-      properties: { vaultPath: stringSchema, notePath: stringSchema, excludedFolders: stringArraySchema, limit: { type: "number" } },
+      properties: {
+        vaultPath: stringSchema,
+        notePath: stringSchema,
+        excludedFolders: stringArraySchema,
+        limit: { type: "number" }
+      },
       required: ["vaultPath"]
     },
     handler: (input) => findLinkOpportunities(findLinkOpportunitiesInput.parse(input))
@@ -111,7 +135,10 @@ const tools: Record<string, ToolDefinition> = {
       type: "object",
       properties: {
         vaultPath: stringSchema,
-        proposalType: { type: "string", enum: ["inbox-cleanup", "task-harvest", "link-opportunities", "moc", "dashboard", "other"] },
+        proposalType: {
+          type: "string",
+          enum: ["inbox-cleanup", "task-harvest", "link-opportunities", "moc", "dashboard", "other"]
+        },
         title: stringSchema,
         content: stringSchema
       },
@@ -128,7 +155,8 @@ const tools: Record<string, ToolDefinition> = {
         targetNotePath: stringSchema,
         title: stringSchema,
         patchContent: stringSchema,
-        rationale: stringSchema
+        rationale: stringSchema,
+        excludedFolders: stringArraySchema
       },
       required: ["vaultPath", "targetNotePath", "title", "patchContent"]
     },
@@ -137,7 +165,10 @@ const tools: Record<string, ToolDefinition> = {
 };
 
 export function createVaultwrightServer(): Server {
-  const server = new Server({ name: SERVER_NAME, version: SERVER_VERSION }, { capabilities: { tools: {} } });
+  const server = new Server(
+    { name: SERVER_NAME, version: SERVER_VERSION },
+    { capabilities: { tools: {} } }
+  );
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: Object.entries(tools).map(([name, tool]) => ({

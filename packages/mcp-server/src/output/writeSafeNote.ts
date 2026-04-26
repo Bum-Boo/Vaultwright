@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { PathSafetyError, VaultwrightError } from "../safety/errors.js";
 import { isInside, resolveVaultPath } from "../vault/pathSafety.js";
-import { safeOutputFilename } from "./filenames.js";
+import { findUniqueFilename, safeOutputFilename } from "./filenames.js";
 
 export type OutputKind = "Reviews" | "Proposals" | "Patches";
 
@@ -23,12 +23,15 @@ async function ensureOutputDirectory(vaultRoot: string, outputKind: OutputKind):
     }
 
     // Use lstat before writing so a pre-existing Vaultwright symlink cannot redirect output.
-    if (stat.isSymbolicLink()) throw new PathSafetyError("Vaultwright output folders may not be symlinks.");
-    if (!stat.isDirectory()) throw new PathSafetyError("Vaultwright output path is not a directory.");
+    if (stat.isSymbolicLink())
+      throw new PathSafetyError("Vaultwright output folders may not be symlinks.");
+    if (!stat.isDirectory())
+      throw new PathSafetyError("Vaultwright output path is not a directory.");
     current = next;
   }
   const realDirectory = await fs.realpath(current);
-  if (!isInside(vaultRoot, realDirectory)) throw new PathSafetyError("Output folder escaped vaultPath.");
+  if (!isInside(vaultRoot, realDirectory))
+    throw new PathSafetyError("Output folder escaped vaultPath.");
   return realDirectory;
 }
 
@@ -42,8 +45,10 @@ export async function writeSafeNote(input: {
   const vaultRoot = await resolveVaultPath(input.vaultPath);
   const folderAbsolute = await ensureOutputDirectory(vaultRoot, input.outputKind);
 
-  const fileAbsolute = path.join(folderAbsolute, safeOutputFilename(input.title));
-  if (!isInside(vaultRoot, fileAbsolute)) throw new PathSafetyError("Output file escaped vaultPath.");
+  const filename = await findUniqueFilename(folderAbsolute, safeOutputFilename(input.title));
+  const fileAbsolute = path.join(folderAbsolute, filename);
+  if (!isInside(vaultRoot, fileAbsolute))
+    throw new PathSafetyError("Output file escaped vaultPath.");
   // wx makes proposal/review creation fail instead of overwriting an existing note.
   await fs.writeFile(fileAbsolute, input.content, { encoding: "utf8", flag: "wx" });
   return {

@@ -28,9 +28,10 @@ export function parseMarkdown(markdown: string, filePath = "Untitled.md"): Parse
     : typeof fm.data.tags === "string"
       ? fm.data.tags.split(/[,\s]+/)
       : [];
-  const title = typeof fm.data.title === "string" && fm.data.title.trim()
-    ? fm.data.title.trim()
-    : headings[0] ?? path.basename(filePath, ".md");
+  const title =
+    typeof fm.data.title === "string" && fm.data.title.trim()
+      ? fm.data.title.trim()
+      : (headings[0] ?? path.basename(filePath, ".md"));
 
   return {
     title,

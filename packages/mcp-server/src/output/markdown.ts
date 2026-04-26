@@ -10,7 +10,8 @@ export function patchProposalMarkdown(input: {
 }): string {
   return `# ${input.title}
 
-> Warning: this is a Vaultwright patch proposal. It has not been applied.
+> [!warning]
+> This is a Vaultwright patch proposal. It has not been applied.
 
 Target note: \`${input.targetNotePath}\`
 

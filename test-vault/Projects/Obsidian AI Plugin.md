@@ -3,6 +3,7 @@ title: Obsidian AI Plugin
 aliases: [Vault Assistant]
 tags: [project, obsidian, ai]
 ---
+
 # Obsidian AI Plugin
 
 Goal: explore a local-first assistant for vault maintenance.

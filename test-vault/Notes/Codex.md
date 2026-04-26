@@ -1,6 +1,7 @@
 ---
 tags: [tools, ai]
 ---
+
 # Codex
 
 Codex is the reasoning layer for Vaultwright. The server remains deterministic and local.

@@ -17,9 +17,12 @@ export async function extractTasks(input: z.infer<typeof extractTasksInput>) {
   const parsed = extractTasksInput.parse(input);
   const vaultRoot = await resolveVaultPath(parsed.vaultPath);
   const limit = parsed.limit ?? LIMITS.maxTasks;
-  const files = await scanMarkdownFiles(parsed.vaultPath, { excludedFolders: parsed.excludedFolders });
+  const files = await scanMarkdownFiles(parsed.vaultPath, {
+    excludedFolders: parsed.excludedFolders
+  });
   const tasks = [];
   for (const file of files) {
+    if (file.skipped) continue;
     const content = await fs.readFile(path.join(vaultRoot, file.path), "utf8");
     for (const task of extractMarkdownTasks(content)) {
       if (!parsed.includeDone && task.done) continue;

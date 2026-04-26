@@ -6,12 +6,15 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "dev": "pnpm --filter @vaultwright/mcp-server dev",
-    "lint": "pnpm -r lint"
+    "build": "corepack pnpm -r build",
+    "test": "corepack pnpm -r test",
+    "dev": "corepack pnpm --filter @vaultwright/mcp-server dev",
+    "lint": "corepack pnpm -r lint",
+    "format": "prettier --write \"**/*.{ts,md,json,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,md,json,yml,yaml}\""
   },
   "devDependencies": {
+    "prettier": "^3.3.3",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   },

@@ -11,7 +11,10 @@ export const readNoteInput = z.object({
 
 export async function readNote(input: z.infer<typeof readNoteInput>) {
   const parsed = readNoteInput.parse(input);
-  const { absolutePath, relativePath } = await resolveSafeNotePath(parsed.vaultPath, parsed.notePath);
+  const { absolutePath, relativePath } = await resolveSafeNotePath(
+    parsed.vaultPath,
+    parsed.notePath
+  );
   const content = await fs.readFile(absolutePath, "utf8");
   const maxChars = parsed.maxChars ?? LIMITS.maxCharsPerNote;
   return {

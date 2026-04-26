@@ -2,6 +2,7 @@
 tags: [study, databases]
 aliases: [Indexes]
 ---
+
 # Database Indexing
 
 Indexes trade write cost for read speed. B-trees support range queries.
