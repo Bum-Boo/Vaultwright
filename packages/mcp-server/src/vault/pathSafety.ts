@@ -13,6 +13,7 @@ export async function resolveVaultPath(vaultPath: string): Promise<string> {
 }
 
 export function rejectAbsoluteNotePath(notePath: string): void {
+  // Node's path.isAbsolute is platform-sensitive, so also catch Windows drive and UNC paths.
   if (path.isAbsolute(notePath) || /^[A-Za-z]:[\\/]/.test(notePath) || /^\\\\/.test(notePath)) {
     throw new PathSafetyError("notePath must be relative, not absolute.");
   }
@@ -43,6 +44,7 @@ export function firstPathSegment(relativePath: string): string {
 }
 
 function normalizePolicyPath(relativePath: string): string {
+  // Exclusion matching should behave the same for Windows and POSIX-style vault paths.
   return path.normalize(relativePath).replace(/\\/g, "/").replace(/^\.\//, "").toLowerCase();
 }
 
@@ -67,6 +69,7 @@ export async function resolveSafeNotePath(
   if (!isInside(vaultRoot, absolutePath)) throw new PathSafetyError("Resolved file is outside vaultPath.");
   if (isExcluded(relativePath, excludedFolders)) throw new PathSafetyError(`Path is inside an excluded folder: ${relativePath}`);
 
+  // Check the final real path, not just the lexical path, to block symlink escapes.
   const realPath = await fs.realpath(absolutePath).catch(() => null);
   if (!realPath) throw new PathSafetyError(`Markdown file does not exist: ${notePath}`);
   if (!isInside(vaultRoot, realPath)) throw new PathSafetyError("Symlink escapes outside vaultPath are not allowed.");
@@ -75,6 +78,7 @@ export async function resolveSafeNotePath(
   const stat = await fs.stat(realPath);
   if (!stat.isFile()) throw new PathSafetyError("Resolved note path is not a file.");
   const realRelativePath = path.relative(vaultRoot, realPath);
+  // A symlink can start in an allowed folder and resolve into an excluded folder.
   if (isExcluded(realRelativePath, excludedFolders)) {
     throw new PathSafetyError(`Resolved file is inside an excluded folder: ${realRelativePath}`);
   }

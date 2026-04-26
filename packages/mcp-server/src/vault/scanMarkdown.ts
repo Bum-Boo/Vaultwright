@@ -36,6 +36,7 @@ export async function scanMarkdownFiles(
       const relative = path.relative(vaultRoot, absolute);
       if (isExcluded(relative, options.excludedFolders)) continue;
       const stat = await fs.lstat(absolute);
+      // Vault scans are read-only and do not follow symlinks into hidden or external trees.
       if (stat.isSymbolicLink()) continue;
       const realPath = await fs.realpath(absolute);
       if (!isInside(vaultRoot, realPath)) continue;

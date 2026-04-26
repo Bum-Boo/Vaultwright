@@ -22,6 +22,7 @@ async function ensureOutputDirectory(vaultRoot: string, outputKind: OutputKind):
       stat = await fs.lstat(next);
     }
 
+    // Use lstat before writing so a pre-existing Vaultwright symlink cannot redirect output.
     if (stat.isSymbolicLink()) throw new PathSafetyError("Vaultwright output folders may not be symlinks.");
     if (!stat.isDirectory()) throw new PathSafetyError("Vaultwright output path is not a directory.");
     current = next;
@@ -43,6 +44,7 @@ export async function writeSafeNote(input: {
 
   const fileAbsolute = path.join(folderAbsolute, safeOutputFilename(input.title));
   if (!isInside(vaultRoot, fileAbsolute)) throw new PathSafetyError("Output file escaped vaultPath.");
+  // wx makes proposal/review creation fail instead of overwriting an existing note.
   await fs.writeFile(fileAbsolute, input.content, { encoding: "utf8", flag: "wx" });
   return {
     createdPath: path.relative(vaultRoot, fileAbsolute).split(path.sep).join("/"),
