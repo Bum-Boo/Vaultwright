@@ -50,6 +50,7 @@ Try the included `test-vault` before using a real vault.
 - [Safety](docs/SAFETY.md)
 - [Privacy](docs/PRIVACY.md)
 - [Portfolio case study](docs/portfolio-case-study.md)
+- [GitHub metadata note](docs/github-metadata.md)
 
 ## Status
 
