@@ -4,11 +4,26 @@ Vaultwright is a local-first maintenance layer for Obsidian vaults. It is design
 
 Do not point Vaultwright at your real vault until `pnpm build`, `pnpm test`, and `pnpm lint` pass locally and you have a current backup of the vault.
 
+## Who it is for
+
+Vaultwright is for people who keep important work in Markdown notes and want AI-assisted review without handing over direct write access to the vault. It is shaped for personal knowledge management, study notes, project notes, meeting notes, and inbox cleanup workflows where the user still wants the final decision point.
+
+Typical users are Obsidian users, developers, students, researchers, writers, and solo operators who want Codex to help find structure, tasks, stale notes, link opportunities, and review themes while keeping existing notes read-only.
+
 ## Local-first architecture
 
 Vaultwright keeps v0.1 deterministic and local. The MCP server reads allowed Markdown files, scans vault metadata, validates paths, extracts links/tags/tasks, and saves new review/proposal files into Vaultwright-owned folders.
 
 The MCP server does not call OpenAI, ChatGPT, Codex, embeddings APIs, or any external LLM API. Codex is the reasoning layer. Vaultwright is the local tool layer.
+
+## Core workflows
+
+- Daily and weekly vault reviews.
+- Inbox cleanup proposals that group messy notes without moving files.
+- Task harvesting across project, study, daily, and inbox notes.
+- Conservative link opportunity reports for manual review.
+- Project status summaries from local Markdown context.
+- Patch proposals that document suggested edits without applying them.
 
 ## What Codex does vs the MCP server
 
@@ -90,6 +105,10 @@ The bundled `packages/codex-plugin/mcp/vaultwright.mcp.json` is a plugin-layout 
 
 More complete prompt examples are in [docs/CODEX_PROMPTS.md](docs/CODEX_PROMPTS.md). Example generated outputs are in [examples/outputs](examples/outputs).
 
+## Portfolio case study
+
+For a higher-level explanation of the product framing, architecture choices, safety boundaries, and next steps, see [docs/portfolio-case-study.md](docs/portfolio-case-study.md).
+
 ## Safety model
 
 Vaultwright v0.1 does not modify existing notes. It does not delete files, move files, insert tags, insert wiki links, mutate frontmatter, apply patches, sync to cloud services, collect telemetry, or call network LLM APIs.
@@ -97,6 +116,10 @@ Vaultwright v0.1 does not modify existing notes. It does not delete files, move 
 When Vaultwright saves something, it creates a new file only in `Vaultwright/Reviews`, `Vaultwright/Proposals`, or `Vaultwright/Patches`. Patch proposals are documentation only; they are not applied.
 
 Default excluded folders are `.obsidian`, `.git`, `node_modules`, `Vaultwright`, `Private`, and `Archive`.
+
+## Project status
+
+Vaultwright is an early public v0.1 focused on deterministic MCP tooling and safe proposal generation. The useful surface is intentionally narrow: inspect local Markdown, produce review/proposal notes, and leave destructive or mutating actions outside the tool boundary.
 
 ## Known limitations
 
