@@ -6,7 +6,7 @@ tags: [meeting, vaultwright]
 
 ## Attendees
 
-- Hojun
+- Bum-Boo
 
 ## Notes
 
